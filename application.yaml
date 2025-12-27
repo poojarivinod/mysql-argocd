@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: storage-classes
+  name: mysql
   namespace: argocd  # ArgoCD's namespace
   # dependency, lowest priorty will be created first
   annotations:
