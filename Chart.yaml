@@ -1,0 +1,6 @@
+# search as install helm--> click on helm --> chart template guide --> Charts --> click on  Charts Guide
+apiVersion: v2 #chart api version
+name: mysql
+version: 1.0.0 #chart version
+description: This is MySQL deployment
+appVersion: 1.0.0 #nginx app version(application version)

@@ -1,0 +1,32 @@
+# App of Apps
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: storage-classes
+  namespace: argocd  # ArgoCD's namespace
+  # dependency, lowest priorty will be created first
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/poojarivinod/mysql-argocd.git
+    targetRevision: main   # or a tag/commit hash
+    path: . # .(dot) means file is their in current folder
+    # search in google as "argocd source helm" --> Argo CD
+    helm:
+      releaseName: mysql
+      valueFiles:
+      - values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true           # delete resources not in Git
+      selfHeal: true        # revert out-of-band changes
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+      - ServerSideApply=true
+      - PruneLast=true

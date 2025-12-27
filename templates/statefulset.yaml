@@ -1,0 +1,41 @@
+#stateful set
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: expense
+spec:
+  selector: 
+    matchLabels: # for service
+      app: mysql # has to match .spec.template.metadata.labels
+      project: expense
+      tier: db
+  serviceName: "mysql-headless"
+  replicas: {{ .Values.statefulset.replicas }} # by default is 1
+  minReadySeconds: 10 # by default is 0
+  template: # for statefull set
+    metadata:
+      labels:
+        app: mysql # has to match .spec.selector.matchLabels
+        project: expense
+        tier: db
+    spec: #for pods
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: mysql
+        image: poojarivinod1/mysql:{{ .Values.statefulset.version }}
+        # port doesn't required, by default opens the 3306
+        volumeMounts: 
+        - name: mysql
+          mountPath: /var/lib/mysql # At this location, mysql data is stored
+  # Instead of creating a PVC resource, you can directly provide in statefulset
+  volumeClaimTemplates: # This is equivalent to pvc
+  - metadata:
+      name: mysql
+      namespace: expense
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ebs-sc"
+      resources:
+        requests:
+          storage:  {{ .Values.statefulset.storage }}

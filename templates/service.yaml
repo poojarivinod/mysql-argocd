@@ -1,0 +1,45 @@
+# copy from k8-expense-volume/mysql/manifest.yaml
+# headless service, normal service and stateful set
+# mysql headless service for clustering purpose, mysql normal service for load balancer.
+# copy and paste the 17-statefulset.yaml and do some changes
+# mysql headless service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-headless
+  namespace: expense
+  labels:
+    app: mysql
+    project: expense
+    tier: db
+spec:
+  clusterIP: None
+  selector:
+    app: mysql
+    project: expense
+    tier: db
+  ports:
+  - protocol: TCP
+    port: 3306 # service port
+    targetPort: 3306
+---
+# mysql normal service
+# copy the same as above and do some changes
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: expense
+  labels:
+    app: mysql
+    project: expense
+    tier: db
+spec:
+  selector:
+    app: mysql
+    project: expense
+    tier: db
+  ports:
+  - protocol: TCP
+    port: 3306 # service port
+    targetPort: 3306
